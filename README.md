@@ -37,4 +37,4 @@ chain.execute(context, err => {
 
 ## Compatibility
 
-Works with node `>=4` by default, but should run [everywhere async works](https://github.com/caolan/async#in-the-browser), with [transpilation](http://babeljs.io/) being required for some JS environments.
+Works with node `>=4` by default, but should run [anywhere async does](https://github.com/caolan/async#in-the-browser), with [transpilation](http://babeljs.io/) being required for some JS environments.
