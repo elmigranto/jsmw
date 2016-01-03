@@ -1,0 +1,43 @@
+{
+  "name": "jsmw",
+  "version": "0.1.0",
+  "description": "Simple middleware pattern implementation on top of async.series",
+  "keywords": [
+    "async",
+    "async series",
+    "asynchronous",
+    "callback",
+    "control",
+    "flow",
+    "middleware",
+    "middleware pattern",
+    "middlewares",
+    "series"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/elmigranto/jsmw.git"
+  },
+  "bugs": {
+    "url": "https://github.com/elmigranto/jsmw/issues"
+  },
+  "homepage": "https://github.com/elmigranto/jsmw",
+  "main": "index.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "dependencies": {
+    "async": "^1.5.1"
+  },
+  "devDependencies": {
+    "eslint": "^1.10.3",
+    "expect.js": "^0.3.1",
+    "mocha": "^2.3.4"
+  },
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint .",
+    "test": "./node_modules/.bin/mocha test.js"
+  },
+  "author": "Alexey Zabrodsky <elmigranto@gmail.com> (http://elmigranto.me)",
+  "license": "ISC"
+}
