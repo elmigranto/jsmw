@@ -95,4 +95,86 @@ describe('Jsmw', function () {
         });
     });
   });
+
+  describe('Nested chains', function () {
+    it('works without context', function (done) {
+      const called = {order: 0};
+
+      const inner = jsmw()
+        .use((ctx, next) => {
+          expect(ctx).to.be(null);
+          called.inner = ++called.order;
+          next();
+        });
+
+      const outer = jsmw()
+        .use((ctx, next) => {
+          expect(ctx).to.be(null);
+          called.outer = ++called.order;
+          process.nextTick(next);
+        })
+        .use(inner);
+
+      outer.execute(err => {
+        expect(err).to.be(null);
+        expect(called).to.eql({
+          outer: 1,
+          inner: 2,
+          order: 2
+        });
+        done();
+      });
+    });
+
+    it('works with context', function (done) {
+      const context = {order: 0};
+
+      const inner = jsmw()
+        .use((ctx, next) => {
+          expect(ctx).to.be(context);
+          ctx.inner = ++ctx.order;
+          process.nextTick(next);
+        });
+
+      const outer = jsmw()
+        .use(inner)
+        .use((ctx, next) => {
+          expect(ctx).to.be(context);
+          ctx.outer = ++ctx.order;
+          next();
+        });
+
+      outer.execute(context, err => {
+        expect(err).to.be(null);
+        expect(context).to.eql({
+          inner: 1,
+          outer: 2,
+          order: 2
+        });
+        done();
+      });
+    });
+
+    it('inner error stops execution', function (done) {
+      let called = false;
+
+      const chain = jsmw()
+        .use(jsmw()
+          .use((ctx, next) => {
+            process.nextTick(next, new Error('InnerOops!'));
+          })
+        )
+        .use((ctx, next) => {
+          called = true;
+          process.nextTick(next, new Error('OuterOops!'));
+        });
+
+      chain.execute(err => {
+        expect(err).to.be.an(Error);
+        expect(err.message).to.be('InnerOops!');
+        expect(called).to.be(false);
+        done();
+      });
+    });
+  });
 });
