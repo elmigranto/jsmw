@@ -17,20 +17,28 @@ const chain = jsmw()
       ctx.afterTick = Date.now();
       next();
     });
-  })
-  .use((ctx, next) => {
-    ctx.diff = ctx.afterTick - ctx.beforeTick;
-    next();
   });
 
 // Execute your chain with different contexts.
 const context = {};
 chain.execute(context, err => {
-  return err
-    ? console.error(err)
-    : console.log(JSON.stringify(context, null, 2));
+  console.log(err || context);
+  // { beforeTick: 1451920587070, afterTick: 1451920587073 }
 });
 
+// Supports nested chains (context passed from outer one).
+const nestingContext = {};
+const nestedChain = jsmw()
+  .use(chain)
+  .use((ctx, next) => {
+    ctx.diff = ctx.afterTick - ctx.beforeTick;
+    next();
+  });
+
+nestedChain.execute(nestingContext, err => {
+  console.log(err || nestingContext);
+  // { beforeTick: 1451920587072, afterTick: 1451920587123, diff: 51 }
+});
 ```
 
 [Tests](/test.js) have more examples.
